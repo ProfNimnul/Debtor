@@ -1,0 +1,10 @@
+adodbapi==2.6.0.7
+coverage==4.4.1
+dbfpy==2.3.1
+pywin32==221
+win32compat==221.26
+win32core==221.23
+win32ext==221.1
+xlrd==1.0.0
+xlutils==2.0.0
+xlwt==1.2.0
