@@ -1,7 +1,6 @@
-import Debtor
+from Debtor import Debtor
 
-debtor = Debtor.Debtor()
-debtor.ConvertDBFtoXLS()
+debtor = Debtor()
 debtor.OpenEXCELFile()
 debtor.ReplaceInSheet()
-debtor.CloseEXCEL()
+debtor.SaveAndCloseEXCEL()
