@@ -1,24 +1,40 @@
 import win32com.client as w32
 import sys
 from os import path as p
-import easygui
+from easygui import msgbox, fileopenbox
 
 class Debtor:
     ## Блок глобвльных данных
 
-    def __init__ ( self,fname):
 
+    # *****************************************************************
         # метод открыыает файл Excel с должниками, перекодирует его и возвращает ссылку на объект-книгу
-
-
-        self.Excel = w32.Dispatch ( "Excel.Application" )
-
+    def openExcelInstance(self,fname):
         try:
+            self.Excel = w32.DispatchEx("Excel.Application")
             self.wb = self.Excel.Workbooks.Open ( fname )
             self.ws = self.wb.ActiveSheet
 
         except FileNotFoundError:
             print ( 'Файл с долгами не найден' )
+            self.wb.Close(False)
+            self.Excel.Application.Quit()
+            sys.exit(-1)
+
+    #*****************************************************************
+
+
+    def get_xls_file_name(self):
+        """ Окно выбора файла и его возворат"""
+        fname = ''
+        while len(fname) == 0:
+            if not fname.endswith(".xls"):
+                msgbox('Это не XLS- файл', ok_button="ОК", title="Перевірте тип файла!")
+                fname = ''
+                # exit ( )
+        return fname
+
+    #*****************************************************************
 
     def ReplaceInSheet ( self ):
         # wb- книга, открытая методом OpenXLS
@@ -43,6 +59,9 @@ class Debtor:
                     'Лазурная': 'Лазурна',
                     }  # и т. д
 
+
+
+
         for source_pattern in patterns:
             # dest_pattern = patterns.get(source_pattern)
             dest_pattern = patterns[ source_pattern ]
@@ -56,16 +75,18 @@ class Debtor:
                 self.Excel.Quit ( )
 
         return
-
+    #*****************************************************************
     def SaveAndClose (self, path):
         self.wb.SaveAs(path+u'Боржники.xlsx' , 51 )
         self.wb.Close ( )
         self.Excel.Quit ( )
         return
-
+    #*****************************************************************
 
     def addWarning(self):
         pass
+    #*****************************************************************
+
 
     def addHeader(self):
         import datetime
@@ -97,7 +118,7 @@ class Debtor:
         self.ws.Range("1:1").Select()
         for _ in range(5):
             # посмотреть и изучить количество аргументов и порядок их передачи!!!
-            self.ws.Selection.Insert (Shift = xlDown, CopyOrigin = xlFormatFromLeftOrAbove)
+            self.ws.Selection.Insert (Shift = -4121, CopyOrigin = 0)
 
         self.ws.Range("A1:E5").Select()
         self.ws.Selection.ClearContents()
@@ -112,31 +133,24 @@ class Debtor:
         self.ws.Selection.ReadingOrder = -5002 #xlContext
         self.ws.Selection.MergeCells = -1
         self.ws.Selection.Font.Size = 20
-        self.ws.Selection.Font.Bold = True
+        self.ws.Selection.Font.Bold = -1
         self.ws.Selection.Font.Color = -16776961
 
-        self.ws.Selection.Merge()
-        ## Все константі перевести в числовой вид!!!
-
-
-
-
-
-
-
+        #self.ws.Selection.Merge()
+        self.ws.Range("C1").Value = header_city
+        self.ws.Range("B3").Value = header_warning
+        self.ws.Range("D3").Value = header_with_month        ## Все константі перевести в числовой вид!!!
+    #*****************************************************************
 
 
 if __name__ == '__main__':
-    print(sys.argv)
 
-    if len(sys.argv) > 1:
-        fname = sys.arg[ 1 ]
-    else:
-        fname = u'D:\\DOLG.DBF'
+    fname = debtor.get_xls_file_name()
+    if fname != "":
 
-    path=p.dirname(fname)
-
-    debtor = Debtor ( fname )
-    assert isinstance ( debtor , object )
-    debtor.ReplaceInSheet ( )
-    debtor.SaveAndClose (path)
+        debtor = Debtor ( fname )
+        debtor.openExcelInstance(fname)
+        debtor.ReplaceInSheet ( )
+        debtor.addHeader()
+        path = p.dirname(fname)
+        debtor.SaveAndClose (path)
