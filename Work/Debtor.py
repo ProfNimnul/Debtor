@@ -1,6 +1,6 @@
 import win32com.client as w32
-import sys
 from os import path as p
+from os import remove
 from easygui import msgbox, fileopenbox
 
 class Debtor:
@@ -15,11 +15,17 @@ class Debtor:
             self.wb = self.Excel.Workbooks.Open ( fname )
             self.ws = self.wb.ActiveSheet
 
-        except FileNotFoundError:
+        except FileNotFoundError as  E:
             print ( 'Файл с долгами не найден' )
+            print ( E )
+
             self.wb.Close(False)
             self.Excel.Application.Quit()
             sys.exit(-1)
+        else:
+            return self.Excel,self.wb,self.ws
+
+
 
     #*****************************************************************
 
@@ -27,18 +33,19 @@ class Debtor:
     def get_xls_file_name(self):
         """ Окно выбора файла и его возворат"""
         fname = ''
+        fname = fileopenbox("Выберите файл",default = "*.xlsx")
         while len(fname) == 0:
-            if not fname.endswith(".xls"):
-                msgbox('Это не XLS- файл', ok_button="ОК", title="Перевірте тип файла!")
+            if not fname.endswith(".xlsx"):
+                msgbox('Это не XLSx- файл', ok_button="ОК", title="Перевірте тип файла!")
                 fname = ''
                 # exit ( )
         return fname
 
     #*****************************************************************
 
-    def ReplaceInSheet ( self ):
+    def ReplaceInSheet ( self,Excel, wb, ws ):
         # wb- книга, открытая методом OpenXLS
-
+        
         patterns = {u'ИТОГО по дому': u'ВСЬОГО по будинку:',
                     'Карабельная': 'Корабельна',
                     'Александрийская': 'Олександрійська',
@@ -66,29 +73,39 @@ class Debtor:
             # dest_pattern = patterns.get(source_pattern)
             dest_pattern = patterns[ source_pattern ]
             try:
-                self.ws.Columns ( 'A' ).Replace ( source_pattern , dest_pattern , 2 , 2 , False , True )
-            # False,
-            #  False)
+
+                # тут вставляем проверку на наличие того, что можно заменить
+                #if ws.Columns("A").Find...
+
+                ws.Columns ( 'A' ).Replace ( source_pattern , dest_pattern , 2 , 2 , False , True ):
+                    continue
             except AttributeError:
-                # self.wb.SaveAs(u"Боржники.xls", 51)
-                self.wb.Close ( )
-                self.Excel.Quit ( )
+                pass
+
+           # wb.Close ( )
+           # Excel.Quit ( )
 
         return
     #*****************************************************************
-    def SaveAndClose (self, path):
-        self.wb.SaveAs(path+u'Боржники.xlsx' , 51 )
-        self.wb.Close ( )
-        self.Excel.Quit ( )
+
+    def SaveAndClose (self, path, Excel, wb):
+        fullpath = path+u'Боржники.xlsx'
+        try:
+            if p.exists(fullpath):
+                remove(fullpath)
+        except OSError as E:
+            print(E)
+        else:
+            wb.SaveAs(fullpath , 51 )
+            wb.Close ( )
+            Excel.Quit ( )
         return
     #*****************************************************************
 
-    def addWarning(self):
-        pass
-    #*****************************************************************
+#*****************************************************
 
 
-    def addHeader(self):
+    def addHeader(self, ws):
         import datetime
         current_month = datetime.datetime.today().month
 
@@ -115,42 +132,47 @@ class Debtor:
                          " з утримання будинків та прибудинкових територій!"
 
 
-        self.ws.Range("1:1").Select()
+        ws.Range("1:1").Select()
         for _ in range(5):
             # посмотреть и изучить количество аргументов и порядок их передачи!!!
-            self.ws.Selection.Insert (Shift = -4121, CopyOrigin = 0)
+            ws.Selection.Insert (Shift = -4121, CopyOrigin = 0)
 
-        self.ws.Range("A1:E5").Select()
-        self.ws.Selection.ClearContents()
+        ws.Range("A1:E5").Select()
+        ws.Selection.ClearContents()
 
-        self.ws.Selection.HorizontalAlignment = -4108 #xlCenter
-        self.ws.Selection.VerticalAlignment = -4160 #xlTop
-        self.ws.Selection.WrapText = -1
-        self.ws.Selection.Orientation = 0
-        self.ws.Selection.AddIndent = 0
-        self.ws.Selection.IndentLevel = 0
-        self.ws.Selection.ShrinkToFit = 0
-        self.ws.Selection.ReadingOrder = -5002 #xlContext
-        self.ws.Selection.MergeCells = -1
-        self.ws.Selection.Font.Size = 20
-        self.ws.Selection.Font.Bold = -1
-        self.ws.Selection.Font.Color = -16776961
+        ws.Selection.HorizontalAlignment = -4108 #xlCenter
+        ws.Selection.VerticalAlignment = -4160 #xlTop
+        ws.Selection.WrapText = -1
+        ws.Selection.Orientation = 0
+        ws.Selection.AddIndent = 0
+        ws.Selection.IndentLevel = 0
+        ws.Selection.ShrinkToFit = 0
+        ws.Selection.ReadingOrder = -5002 #xlContext
+        ws.Selection.MergeCells = -1
+        ws.Selection.Font.Size = 20
+        ws.Selection.Font.Bold = -1
+        ws.Selection.Font.Color = -16776961
 
-        #self.ws.Selection.Merge()
-        self.ws.Range("C1").Value = header_city
-        self.ws.Range("B3").Value = header_warning
-        self.ws.Range("D3").Value = header_with_month        ## Все константі перевести в числовой вид!!!
+        #ws.Selection.Merge()
+        ws.Range("C1").Value = header_city
+        ws.Range("B3").Value = header_warning
+        ws.Range("D3").Value = header_with_month        ## Все константі перевести в числовой вид!!!
     #*****************************************************************
 
 
 if __name__ == '__main__':
 
-    fname = debtor.get_xls_file_name()
-    if fname != "":
 
-        debtor = Debtor ( fname )
-        debtor.openExcelInstance(fname)
-        debtor.ReplaceInSheet ( )
-        debtor.addHeader()
+        debtor = Debtor ()
+
+        fname = debtor.get_xls_file_name()
+
+        Excel,wb,ws = debtor.openExcelInstance(fname)
+
+        debtor.ReplaceInSheet (Excel,wb,ws )
+
+        debtor.addHeader(ws)
+
         path = p.dirname(fname)
-        debtor.SaveAndClose (path)
+
+        debtor.SaveAndClose (path, Excel, wb)
