@@ -73,12 +73,14 @@ class Debtor:
             # dest_pattern = patterns.get(source_pattern)
             dest_pattern = patterns[ source_pattern ]
             try:
+                try:
+                    founded = ws.Range('A:A').Find(source_pattern)
+                    print(founded)
+                    if founded != None:
+                        ws.Columns('A').Replace(source_pattern, dest_pattern, 2, 2, False, True)
 
-                # тут вставляем проверку на наличие того, что можно заменить
-                #if ws.Columns("A").Find...
-
-                ws.Columns ( 'A' ).Replace ( source_pattern , dest_pattern , 2 , 2 , False , True ):
-                    continue
+                except Exception as E:
+                    print(E)
             except AttributeError:
                 pass
 
@@ -95,10 +97,11 @@ class Debtor:
                 remove(fullpath)
         except OSError as E:
             print(E)
-        else:
+        finally:
             wb.SaveAs(fullpath , 51 )
-            wb.Close ( )
-            Excel.Quit ( )
+            wb.Close()
+            ws.Close()
+            Excel.Quit()
         return
     #*****************************************************************
 
@@ -171,7 +174,7 @@ if __name__ == '__main__':
 
         debtor.ReplaceInSheet (Excel,wb,ws )
 
-        debtor.addHeader(ws)
+        #debtor.addHeader(ws)
 
         path = p.dirname(fname)
 
