@@ -49,13 +49,14 @@ class Debtor:
         patterns = {u'ИТОГО по дому': u'ВСЬОГО по будинку:',
                     'Карабельная': 'Корабельна',
                     'Александрийская': 'Олександрійська',
+                    'YL_DOM': u'Вул., буд.',
                     'дом': ', буд.',
                     'проспект Мира': 'просп. Миру',
                     '1 Мая': '1 Травня',
-                    'Парковая': 'Паркова',
+                    'Парковєая': 'Паркова',
                     'Парусная': 'Парусна',
                     'Спортивная': 'Спортивна',
-                    'ул.': 'вул. ',
+                    'ул.': u'Вул. ',
                     'Виталия': 'Віталія',
                     'Данченко': 'Данченка',
                     'Торговая': 'Торгова',
@@ -64,6 +65,9 @@ class Debtor:
                     'Школьный': 'Шкільний',
                     'Шевченко': 'Шевченка',
                     'Лазурная': 'Лазурна',
+                    'N_KV': '№ кв.',
+                    'SUM_D': 'Борг',
+                    'ВВул': 'Вул'
                     }  # и т. д
 
 
@@ -75,8 +79,11 @@ class Debtor:
             try:
                 try:
                     founded = ws.Range('A:A').Find(source_pattern)
-                    print(founded)
+                    ## print(founded)
                     if founded != None:
+                        print("Исх. шаблон ",source_pattern )
+                        print("Рез. шаблон ",dest_pattern )
+
                         ws.Columns('A').Replace(source_pattern, dest_pattern, 2, 2, False, True)
 
                 except Exception as E:
@@ -91,7 +98,7 @@ class Debtor:
     #*****************************************************************
 
     def SaveAndClose (self, path, Excel, wb):
-        fullpath = path+u'Боржники.xlsx'
+        fullpath = path+u'Боржники_ред.xlsx'
         try:
             if p.exists(fullpath):
                 remove(fullpath)
@@ -100,7 +107,6 @@ class Debtor:
         finally:
             wb.SaveAs(fullpath , 51 )
             wb.Close()
-            ws.Close()
             Excel.Quit()
         return
     #*****************************************************************
@@ -127,39 +133,75 @@ class Debtor:
                      }[current_month]
 
         header_city = "м. Чорноморськ"
-        header_with_month = "Перелік боржників за послуги з утримання будинків \n та прибудинкових теріторій \n" \
+        header_with_month = "Перелік боржників за послуги з утримання будинків та прибудинкових теріторій" \
                             "  станом на 01 {} 2017 р. ".format(month_name)
 
-        header_warning = "Усім боржникам потрібно терминово погасити існуючу заборгованість \n" \
-                         " для подальшого відповідного надання послуг \n" \
+        header_warning = "Усім боржникам потрібно терминово погасити існуючу заборгованість" \
+                         " для подальшого відповідного надання послуг" \
                          " з утримання будинків та прибудинкових територій!"
 
 
-        ws.Range("1:1").Select()
-        for _ in range(5):
-            # посмотреть и изучить количество аргументов и порядок их передачи!!!
-            ws.Selection.Insert (Shift = -4121, CopyOrigin = 0)
+        ws.Range("2:9").Insert(-4142)
+        # for _ in range(5):
+        #     # посмотреть и изучить количество аргументов и порядок их передачи!!!
+        #     ws.Selection.Insert (Shift = -4121, CopyOrigin = 0)
 
-        ws.Range("A1:E5").Select()
-        ws.Selection.ClearContents()
+        ws.Range("A1:F5").ClearContents()
 
-        ws.Selection.HorizontalAlignment = -4108 #xlCenter
-        ws.Selection.VerticalAlignment = -4160 #xlTop
-        ws.Selection.WrapText = -1
-        ws.Selection.Orientation = 0
-        ws.Selection.AddIndent = 0
-        ws.Selection.IndentLevel = 0
-        ws.Selection.ShrinkToFit = 0
-        ws.Selection.ReadingOrder = -5002 #xlContext
-        ws.Selection.MergeCells = -1
-        ws.Selection.Font.Size = 20
-        ws.Selection.Font.Bold = -1
-        ws.Selection.Font.Color = -16776961
+        # ws.Selection.HorizontalAlignment = -4108 #xlCenter
+        # ws.Selection.VerticalAlignment = -4160 #xlTop
+        # ws.Selection.WrapText = -1
+        # ws.Selection.Orientation = 0
+        # ws.Selection.AddIndent = 0
+        # ws.Selection.IndentLevel = 0
+        # ws.Selection.ShrinkToFit = 0
+        # ws.Selection.ReadingOrder = -5002 #xlContext
+        # ws.Selection.MergeCells = -1
+        # ws.Selection.Font.Size = 20
+        # ws.Selection.Font.Bold = -1
+        # ws.Selection.Font.Color = -16776961
 
         #ws.Selection.Merge()
-        ws.Range("C1").Value = header_city
-        ws.Range("B3").Value = header_warning
-        ws.Range("D3").Value = header_with_month        ## Все константі перевести в числовой вид!!!
+        ws.Range("A1:F1").Merge()
+        ws.Range('A1').HorizontalAlignment = -4108 #xlCenter
+        ws.Range('A1').VerticalAlignment = -4160 #xlTop
+
+        ws.Range("A1").Value = header_city
+        ws.Range('A1').Font.Bold = -1
+
+        ws.Range('A3:F4').Merge()
+        ws.Range('A3').HorizontalAlignment = -4108  # xlCenter
+        ws.Range('A3').VerticalAlignment = -4160  # xlTop
+        ws.Range('A3').ShrinkToFit = 0
+        ws.Range('A3').WrapText = -1
+        ws.Range('A3').Font.Bold = -1
+        ws.Range("A3").Value = header_with_month
+
+        ws.Range('A5:F7').Merge()
+        ws.Range('A5').HorizontalAlignment = -4108 #xlCenter
+        ws.Range('A5').VerticalAlignment = -4160 #xlTop
+        ws.Range('A5').WrapText = -1
+        ws.Range('A5').Orientation = 0
+        ws.Range('A5').AddIndent = 0
+        ws.Range('A5').IndentLevel = 0
+        ws.Range('A5').ShrinkToFit = -1
+        ws.Range('A5').ReadingOrder = -5002 #xlContext
+        ws.Range('A5').MergeCells = -1
+        ws.Range('A5').Font.Size = 16
+        ws.Range('A5').Font.Bold = -1
+        ws.Range('A5').Font.Color = -16776961
+        ws.Range("A5").RowHeight = 58.5
+      
+        ws.Range("A5").Value = header_warning
+
+        ws.Range('A10').Font.Bold = -1
+        ws.Range('B10').Font.Bold = -1
+        ws.Range('C10').Font.Bold = -1
+
+        ws.Range('A10').Value = "Вул., буд."
+        ws.Range('B10').Value = "кв."
+        ws.Range('C10').Value = "Борг"
+                ## Все константі перевести в числовой вид!!!
     #*****************************************************************
 
 
@@ -170,11 +212,13 @@ if __name__ == '__main__':
 
         fname = debtor.get_xls_file_name()
 
+
         Excel,wb,ws = debtor.openExcelInstance(fname)
 
+        debtor.addHeader(ws)
         debtor.ReplaceInSheet (Excel,wb,ws )
 
-        #debtor.addHeader(ws)
+
 
         path = p.dirname(fname)
 
