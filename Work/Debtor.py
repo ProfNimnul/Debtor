@@ -4,6 +4,7 @@ from os import remove
 from easygui import msgbox, fileopenbox
 
 class Debtor:
+
     ## Блок глобвльных данных
 
 
@@ -30,13 +31,16 @@ class Debtor:
     #*****************************************************************
 
 
-    def get_xls_file_name(self):
+    def get_file_name(self):
         """ Окно выбора файла и его возворат"""
         fname = ''
-        fname = fileopenbox("Выберите файл",default = "*.xlsx")
+        fname = fileopenbox("Выберите файл",default = "*.xlsx;*.dbf")
+
+        filename, file_extension = p.splitext(fname)
+
         while len(fname) == 0:
-            if not fname.endswith(".xlsx"):
-                msgbox('Это не XLSx- файл', ok_button="ОК", title="Перевірте тип файла!")
+            if  (file_extension.upper() not in ('.XLSX','.DBF')):
+                msgbox('Это не XLSX и не DBF- файл', ok_button="ОК", title="Перевірте тип файла!")
                 fname = ''
                 # exit ( )
         return fname
@@ -81,11 +85,7 @@ class Debtor:
                     founded = ws.Range('A:A').Find(source_pattern)
                     ## print(founded)
                     if founded != None:
-                        print("Исх. шаблон ",source_pattern )
-                        print("Рез. шаблон ",dest_pattern )
-
                         ws.Columns('A').Replace(source_pattern, dest_pattern, 2, 2, False, True)
-
                 except Exception as E:
                     print(E)
             except AttributeError:
@@ -97,7 +97,11 @@ class Debtor:
         return
     #*****************************************************************
 
-    def SaveAndClose (self, path, Excel, wb):
+    def SaveAndClose (self, path, Excel, wb, ws, filetype = "XLSX"):
+        #ActiveWorkbook.ExportAsFixedFormat Type:=xlTypePDF FileName:="sales.pdf" Quality:=xlQualityStandard DisplayFileAfterPublish:=True
+
+
+
         fullpath = path+u'Боржники_ред.xlsx'
         try:
             if p.exists(fullpath):
@@ -105,7 +109,12 @@ class Debtor:
         except OSError as E:
             print(E)
         finally:
-            wb.SaveAs(fullpath , 51 )
+            if filetype == "XLSX":
+                wb.SaveAs(fullpath , 51 )
+            elif filetype=="PDF":
+                fullpath = path + u'Боржники_ред.pdf'
+                ws.ExportAsFixedFormat(0,fullpath,0,0)
+
             wb.Close()
             Excel.Quit()
         return
@@ -210,7 +219,7 @@ if __name__ == '__main__':
 
         debtor = Debtor ()
 
-        fname = debtor.get_xls_file_name()
+        fname = debtor.get_file_name()
 
 
         Excel,wb,ws = debtor.openExcelInstance(fname)
@@ -222,4 +231,4 @@ if __name__ == '__main__':
 
         path = p.dirname(fname)
 
-        debtor.SaveAndClose (path, Excel, wb)
+        debtor.SaveAndClose (path, Excel, wb,ws,"PDF" )
