@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="711b0dff-d434-43b0-b925-7d7b144488a3" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/Debtor.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Debtor.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Debtor.py" beforeDir="false" afterPath="$PROJECT_DIR$/Debtor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,9 +52,10 @@
     <option name="showMembers" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Font" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="run.code.analysis.last.selected.profile" value="aDefault" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="PyCoverageOptionsProvider">
     <option name="myUseBundledCoveragePy" value="true" />
@@ -103,7 +107,7 @@
       <option name="ADDITIONAL_ARGS" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Debtor" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="Debtor" type="PythonConfigurationType" factoryName="Python">
       <module name="Debtor" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -225,12 +229,11 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.main" />
       <item itemvalue="Python.Debtor" />
+      <item itemvalue="Python.main" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.Debtor" />
         <item itemvalue="Python.main" />
       </list>
     </recent_temporary>
@@ -258,6 +261,7 @@
       <option name="presentableId" value="Default" />
       <updated>1497635055800</updated>
       <workItem from="1576431189762" duration="50000" />
+      <workItem from="1576444284240" duration="1621000" />
     </task>
     <servers />
   </component>
@@ -274,10 +278,18 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="336" y="315" key="com.intellij.ide.util.TipDialog" timestamp="1576431202285">
+    <state x="387" y="347" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1576452397544">
       <screen x="0" y="0" width="1280" height="984" />
     </state>
-    <state x="336" y="315" key="com.intellij.ide.util.TipDialog/0.0.1280.984@0.0.1280.984" timestamp="1576431202285" />
+    <state x="387" y="347" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1280.984@0.0.1280.984" timestamp="1576452397544" />
+    <state x="141" y="134" key="SettingsEditor" timestamp="1576451660439">
+      <screen x="0" y="0" width="1280" height="984" />
+    </state>
+    <state x="141" y="134" key="SettingsEditor/0.0.1280.984@0.0.1280.984" timestamp="1576451660439" />
+    <state x="336" y="315" key="com.intellij.ide.util.TipDialog" timestamp="1576451524804">
+      <screen x="0" y="0" width="1280" height="984" />
+    </state>
+    <state x="336" y="315" key="com.intellij.ide.util.TipDialog/0.0.1280.984@0.0.1280.984" timestamp="1576451524804" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
